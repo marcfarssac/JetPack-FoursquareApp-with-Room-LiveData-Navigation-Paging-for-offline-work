@@ -5,7 +5,7 @@ Simple Android app that connects to the [Foursquare API]( https://developer.four
 
 The aim of the App is to show a list of venues obtained from a backend repository. 
 
-Data will be cached locally on devices running the App using the [Room persistance library](https://developer.android.com/topic/libraries/architecture/room). Thanks to the [LiveData](https://developer.android.com/topic/libraries/architecture/livedata) observable data holder class, local data will be updated whenever changes occur on the backend. This will allow the user to view the list of venues also off-line. 
+Data will be cached locally on devices running the App using the [Room persistence library](https://developer.android.com/topic/libraries/architecture/room). Thanks to the [LiveData](https://developer.android.com/topic/libraries/architecture/livedata) observable data holder class, local data will be updated whenever changes occur on the backend. This will allow the user to view the list of venues also off-line. 
 
 Since the number of venues might be very big, the App uses the [Page Library](https://developer.android.com/topic/libraries/architecture/paging/) to loads pages of data gracefully, meaning that searches resulting in big amounts of data would be called in chunks of a few items called pages. The library manages the loading of data when scrolling down the list triggering the required actions to be supplied with additional data. Calls will be made in the first place to the local database and then to the remote repository. 
 
@@ -13,25 +13,25 @@ An overflow menu / or a navigation drawer with Geolocation related features will
 
 The [Google Maps Platform](https://cloud.google.com/maps-platform/maps/) will supply the map. An billing enabled Google Cloud account is required for this step to work (note that the [google services file](https://support.google.com/firebase/answer/7015592?hl=en) is not included in this repository for obvious billing related constraints)
 
-Making use of the [LocatoinServices API](https://developers.google.com/android/reference/com/google/android/gms/location/LocationServices) the App will use the last known position of the user while trying to update it periodically when good gps signal detection is available. Different strategies are applied for devices running Android N and below or Android-O, since the last emphasizes battery draingage reduction on background services, using a Broadcast reciever instead when the App is in the Foreground. 
+Making use of the [LocationServices API](https://developers.google.com/android/reference/com/google/android/gms/location/LocationServices) the App will use the last known position of the user while trying to update it periodically when good gps signal detection is available. Different strategies are applied for devices running Android N and below or Android-O, since the last emphasizes battery drainage reduction on background services, using a Broadcast receiver instead when the App is in the Foreground. 
 
 The App uses the [JetPack](https://developer.android.com/jetpack/) collection of Android Software Components latest versions' and features of the Android SDK and [the last stable release](https://developer.android.com/studio/releases/) of the [Android Studio] Integrated Development Environment. 
 
 ### Prerequisites
 
-This App uses the latest software versions (IDE, Gradle, Plugins and JetPack collection of Android Software Componenets) available at the time of development. In order for the code to work the following versions shall be chekced and corresponding updates shall be installed as explained in the following lines.
+This App uses the latest software versions (IDE, Gradle, Plugins and JetPack collection of Android Software Components) available at the time of development. In order for the code to work the following versions shall be checked and corresponding updates shall be installed as explained in the following lines.
 
 #### Android Studio
 
-The Android Studio (AS) 3.2 Integrated Development Environment (IDE) available since September 24th 2018 is required for the navigations tooling used in this App. The latest Android Studio version can be downloaded [here](https://developer.android.com/studio/). In this version the Navigation editor has to be enabled from the experimental settings (File → Settings → Experimental → Editor → Enable Navigation Editor) and the related (navigation-fragment) dependencies to be implemented in the mobule App gradle file. 
+The Android Studio (AS) 3.2 Integrated Development Environment (IDE) available since September 24th 2018 is required for the navigation tooling used in this App. The latest Android Studio version can be downloaded [here](https://developer.android.com/studio/). In this version the Navigation editor has to be enabled from the experimental settings (File → Settings → Experimental → Editor → Enable Navigation Editor) and the related (navigation-fragment) dependencies to be implemented in the module App gradle file. 
 
 #### Plugins
 
 ##### Kotlin in Android Studio
 
-Due to known issues in the Kotlin pluggin installed with this version it is recommended (see the [release notes](https://androidstudio.googleblog.com/2018/09/android-studio-32-available-in-stable.html)) to uninstall the plugin and install the latest available at version 1.2.71 or above.
+Due to known issues in the Kotlin plugging installed with this version it is recommended (see the [release notes](https://androidstudio.googleblog.com/2018/09/android-studio-32-available-in-stable.html)) to uninstall the plugin and install the latest available at version 1.2.71 or above.
 
-To update the Kotlin plugin navigate to the Settings of Android Studio and look for the plugins section. Search the kotlin one and verify its version number. Uninstall the plugin and restard the IDE when needed. Install the proposed version which will be above 1.2.71. Restar AS.
+To update the Kotlin plugin navigate to the Settings of Android Studio and look for the plugins section. Search the kotlin one and verify its version number. Uninstall the plugin and restart the IDE when needed. Install the proposed version which will be above 1.2.71. Restart AS.
 
 ##### Kotlin Safeargs
 
@@ -39,7 +39,7 @@ Automatic generation of getters and setters to directly access variables null sa
 
 #### Gradle
 
-The project builds with the given configuration. Updating dependencies at the alpha release stage might require to replace deprecated instances' atrributes.
+The project builds with the given configuration. Updating dependencies at the alpha release stage might require to replace deprecated instances' attributes.
 
 ## JetPack Components
 
@@ -57,13 +57,13 @@ The Paging Library loads data gradually and gracefully within the app's. It work
 
 ![Paging diagram](https://user-images.githubusercontent.com/18221570/46413907-47aaee00-c722-11e8-9924-fb10ce179f84.png)
 
-### Room persistance library
+### Room persistence library
 
 The [Room persistence library](https://developer.android.com/topic/libraries/architecture/room) provides an abstraction layer over SQLite to allow for more robust database access while harnessing the full power of SQLite.
 
-#### Debuging the local Room database
+#### Debugging the local Room database
 
-A debug implementation has been added to the gradle file with the [Android debug database](https://github.com/amitshekhariitbhu/Android-Debug-Database) dependency. It is implemented while debuging and it allows to access the local room database using the browser at an http://x.x.x.x: 8080 port. Check logs to find the ip address / debug url.
+A debug implementation has been added to the gradle file with the [Android debug database](https://github.com/amitshekhariitbhu/Android-Debug-Database) dependency. It is implemented while debugging and it allows to access the local room database using the browser at an http://x.x.x.x: 8080 port. Check logs to find the ip address / debug url.
 
 ### Live Data
 

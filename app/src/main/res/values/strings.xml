@@ -1,0 +1,27 @@
+<resources>
+
+    <string name="app_name">FoursquareJetPackApp</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Foursquare JetPack App</string>
+    <string name="nav_header_subtitle">marc.farssac@gmail.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+
+    // Permissions
+    <string name="permission_rationale">Location permission is needed for core functionality</string>
+    <string name="permission_denied_explanation">Permission was denied, but is needed for core
+        functionality.</string>
+
+    // Menus and dialogs
+    <string name="settings">Settings</string>
+    <string name="show_venues_map">Show venues map</string>
+    <string name="ok">OK</string>
+
+    // Search
+    <string name="search_hint">Search venues</string>
+
+    // Map
+    <string name="map_show_locations_around">Show Venues around here on the map</string>
+
+</resources>
