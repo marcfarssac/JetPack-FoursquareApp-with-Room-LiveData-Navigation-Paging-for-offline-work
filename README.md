@@ -73,6 +73,14 @@ The [Live Data](https://developer.android.com/topic/libraries/architecture/lived
 
 The [View Model](https://developer.android.com/topic/libraries/architecture/viewmodel) class is life cycle aware designed to store and manage UI-related data in a lifecycle conscious way. In other words, configuration changes on the application will not affect the View Model data except in those states where the data really needs to be updated.
 
+## [Foursquare Api](https://developer.foursquare.com/)
+
+Sophisticated location platform tools to power the way software interacts with real world. One of the many Foursquare available products will be used for this project, namely the [Places Api](https://developer.foursquare.com/places-api). After registration and setting up a project, the Client ID and Client Secret Keys are provided for the developer to make the calls.
+
+### Places Api
+
+This App uses Foursquare Developers [regular endpoints](https://developer.foursquare.com/docs/api/endpoints) with basic venue data. Out of the many endpoints, the [Search for Venues](https://developer.foursquare.com/docs/api/venues/search) will be used in the first place.
+
 ## Google Api
 
 An Account with billing enabled in the [Google Cloud console](https://accounts.google.com/ServiceLogin/signinchooser?flowName=GlifWebSignIn&flowEntry=ServiceLogin) is needed to enable the Google Apis. Google offers [up to €100.000 FREE CREDIT](https://cloud.google.com/developers/startups/) can be requested from Google Cloud to start new projects.
@@ -91,8 +99,19 @@ The gradle file contains the <b>androidTestCompile</b> dependencies for the Supp
 
 - Initial commit with architecture summary
 
+## Author
+
+* **Marc Farssac** - *Initial work* 
+
 ## License
 
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+
+## Acknowledgements
+
+* [Android developers](https://developer.android.com/docs/) - Documentation for app developers
+* [Google Developers](https://developers.google.com/) - Build <b>anything</b> with Google
+* [Stackoverflow](https://stackoverflow.com/) - Questions and answers
 
 
 
