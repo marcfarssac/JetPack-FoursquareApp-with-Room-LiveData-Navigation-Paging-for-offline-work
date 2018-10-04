@@ -33,7 +33,16 @@ ext {
     espressoVersion = "2.2.2"
     navigationVersion = "1.0.0-alpha01"
     constraintLayoutVersion = "1.1.0"
+
     runnerVersion = '1.0.2'
     rulesVersion = '1.0.2'
+    junitVersion = "4.12"
+    espressoVersion = "3.0.1"
     kotlinVersion = '1.2.71'
+
+    archComponentsVersion = "1.1.1"
+    roomVersion = "1.1.1"
+    pagingVersion = "1.0.1"
+    retrofitVersion = "2.3.0"
+    okhttpLoggingInterceptorVersion = "3.9.0"
 }
