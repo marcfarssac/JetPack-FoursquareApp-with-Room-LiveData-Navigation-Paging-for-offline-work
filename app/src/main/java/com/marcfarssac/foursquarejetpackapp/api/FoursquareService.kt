@@ -63,8 +63,18 @@ fun searchVenue(
                 ) {
                     Log.d(TAG, "got a response $response")
                     if (response.isSuccessful) {
-                        val venueList = response.body()?.items ?: emptyList()
-                        onSuccess(venueList)
+                        val venueList = response.body()?.response?.venues ?: emptyList()
+
+                        // ToDo change the way to adapt backend venue class to local repo
+                        val localVenues = arrayListOf<Venue>()
+                        for(venue in venueList)
+                            localVenues.add(Venue(venue.id,
+                                    venue.name,
+                                    venue.location?.address,
+                                    venue.location?.distance,
+                                    venue.location?.lng, venue.location?.lat))
+
+                        onSuccess(localVenues)
                     } else {
                         onError(response.errorBody()?.string() ?: "Unknown error")
                     }
