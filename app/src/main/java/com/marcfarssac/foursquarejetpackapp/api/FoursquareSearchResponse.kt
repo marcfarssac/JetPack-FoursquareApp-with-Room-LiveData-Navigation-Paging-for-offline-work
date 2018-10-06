@@ -18,12 +18,11 @@ package com.marcfarssac.foursquarejetpackapp.api
 
 
 import com.google.gson.annotations.SerializedName
-import com.marcfarssac.foursquarejetpackapp.model.Venue
 
 /**
  * Data class to hold Venue responses from searchVenues API calls.
  */
 data class FoursquareSearchResponse(
-        @SerializedName("venues") val items: List<Venue> = emptyList(),
-        val nextPage: Int? = null
+        @SerializedName("meta") val meta: Meta,
+        @SerializedName("response") val response: Response
 )
