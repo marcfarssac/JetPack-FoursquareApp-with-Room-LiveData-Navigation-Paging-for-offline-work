@@ -1,22 +1,9 @@
-/*
- * Copyright (C) 2018 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+@file:Suppress("SpellCheckingInspection", "SpellCheckingInspection", "SpellCheckingInspection")
 
 package com.marcfarssac.foursquarejetpackapp.api
 
 import android.util.Log
+import com.marcfarssac.foursquarejetpackapp.model.Venue
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Level
@@ -28,7 +15,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
+@Suppress("SpellCheckingInspection")
 private const val TAG = "Foursquare"
+
 private const val client_id = "WFW1MAYPFSDLAOKIKZFXDBFVUU0YO4DQYJFP0W5E1DCHWZ44"
 private const val client_secret = "ZF1ALSEJ1XDRU3QZJ3ICPXXNG0BBXIKPI5PU3KYGO1ORLX4P"
 private const val version = "20181004"
@@ -56,25 +45,25 @@ fun searchVenue(
         ll: String,
         limit: Int,
         intentParam: String,
-        onSuccess: (venueDetailsList: List<VenueDetails>) -> Unit,
+        onSuccess: (venues: List<Venue>) -> Unit,
         onError: (error: String) -> Unit) {
 
     Log.d(TAG, "query: $query, ll: $ll, intent $intentParam, limit: $limit")
 
     api.searchVenues(query, ll, limit, intentParam).enqueue(
-            object : Callback<FourSquareApiPlacesResponse> {
-                override fun onFailure(call: Call<FourSquareApiPlacesResponse>?, t: Throwable) {
+            object : Callback<FoursquareSearchResponse> {
+                override fun onFailure(call: Call<FoursquareSearchResponse>, t: Throwable) {
                     Log.d(TAG, "fail to get data")
                     onError(t.message ?: "unknown error")
                 }
 
                 override fun onResponse(
-                        call: Call<FourSquareApiPlacesResponse>?,
-                        response: Response<FourSquareApiPlacesResponse>
+                        call: Call<FoursquareSearchResponse>,
+                        response: Response<FoursquareSearchResponse>
                 ) {
                     Log.d(TAG, "got a response $response")
                     if (response.isSuccessful) {
-                        val venueList = response.body()?.venues?.venueDetailsList ?: emptyList()
+                        val venueList = response.body()?.items ?: emptyList()
                         onSuccess(venueList)
                     } else {
                         onError(response.errorBody()?.string() ?: "Unknown error")
@@ -94,9 +83,9 @@ interface FoursquareService {
      */
     @GET("search?$API_KEY")
     fun searchVenues(@Query("query") query: String,
-                     @Query( "ll") ll: String,
-                     @Query( "limit") limit: Int,
-                     @Query("intent") intent: String): Call<FourSquareApiPlacesResponse>
+                     @Query("ll") ll: String,
+                     @Query("limit") limit: Int,
+                     @Query("intent") intent: String): Call<FoursquareSearchResponse>
 
     companion object {
         private const val API_KEY = "client_id=$client_id&client_secret=$client_secret&v=$version"

@@ -24,6 +24,6 @@ import com.marcfarssac.foursquarejetpackapp.model.Venue
  * Data class to hold Venue responses from searchVenues API calls.
  */
 data class FoursquareSearchResponse(
-        @SerializedName("venueDetails") val venueDetails: List<Venue> = emptyList(),
+        @SerializedName("venues") val items: List<Venue> = emptyList(),
         val nextPage: Int? = null
 )
