@@ -31,7 +31,7 @@ abstract class FoursquareDatabase : RoomDatabase() {
 
         private fun buildDatabase(context: Context) =
                 Room.databaseBuilder(context.applicationContext,
-                        FoursquareDatabase::class.java, "Foursquare.db")
+                        FoursquareDatabase::class.java, "SearchedVenues.db")
                         .build()
     }
 }
