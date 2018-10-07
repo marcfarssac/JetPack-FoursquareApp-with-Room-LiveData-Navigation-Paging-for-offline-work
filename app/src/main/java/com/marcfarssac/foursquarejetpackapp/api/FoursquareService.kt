@@ -3,6 +3,7 @@
 package com.marcfarssac.foursquarejetpackapp.api
 
 import android.util.Log
+import com.marcfarssac.foursquarejetpackapp.data.FoursquareCallParams
 import com.marcfarssac.foursquarejetpackapp.model.Venue
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -28,12 +29,8 @@ private const val version = "20181004"
  * Developer documentation at: https://developer.foursquare.com/docs/api/venues/search
  *
  * Trigger a request to the Foursquare Places API with the following params:
- * @param query A search term to be applied against venue names.
- * @param ll Latitude and longitude of the user’s location. Optional if using intent=global
- * @param limit Number of results to return, up to 50.
- * @param intentParam One of the values below, indicating your intent in performing the search.
- *        If no value is specified, defaults to checkin.
-
+ * @param fourSquaryQueryParams contains the four URL query parameters. (Query, LatLng, limit
+ * and intent as described in the Foursquare API documentation
  *
  * The result of the request is handled by the implementation of the functions passed as params
  * @param onSuccess function that defines how to handle the list of venueDetails received
@@ -41,46 +38,51 @@ private const val version = "20181004"
  */
 fun searchVenue(
         api: FoursquareService,
-        query: String,
-        ll: String,
-        limit: Int,
-        intentParam: String,
+        fourSquaryQueryParams: FoursquareCallParams,
         onSuccess: (venues: List<Venue>) -> Unit,
         onError: (error: String) -> Unit) {
 
-    Log.d(TAG, "query: $query, ll: $ll, intent $intentParam, limit: $limit")
+    Log.d(TAG, "query: ${fourSquaryQueryParams.query}, latLng: ${fourSquaryQueryParams.latLng}, limit: ${fourSquaryQueryParams.limit}, intent: ${fourSquaryQueryParams.intent}")
 
-    api.searchVenues(query, ll, limit, intentParam).enqueue(
-            object : Callback<FoursquareSearchResponse> {
-                override fun onFailure(call: Call<FoursquareSearchResponse>, t: Throwable) {
-                    Log.d(TAG, "fail to get data")
-                    onError(t.message ?: "unknown error")
-                }
+        api.searchVenues(fourSquaryQueryParams.query, fourSquaryQueryParams.latLng, fourSquaryQueryParams.limit, fourSquaryQueryParams.intent).enqueue(
+                object : Callback<FoursquareSearchResponse> {
+                    override fun onFailure(call: Call<FoursquareSearchResponse>, t: Throwable) {
+                        Log.d(TAG, "fail to get data")
+                        onError(t.message ?: "unknown error")
+                    }
 
-                override fun onResponse(
-                        call: Call<FoursquareSearchResponse>,
-                        response: Response<FoursquareSearchResponse>
-                ) {
-                    Log.d(TAG, "got a response $response")
-                    if (response.isSuccessful) {
-                        val venueList = response.body()?.response?.venues ?: emptyList()
+                    override fun onResponse(
+                            call: Call<FoursquareSearchResponse>,
+                            response: Response<FoursquareSearchResponse>
+                    ) {
+                        Log.d(TAG, "got a response $response")
+                        if (response.isSuccessful) {
+                            val venueList = response.body()?.response?.venues ?: emptyList()
 
-                        // ToDo change the way to adapt backend venue class to local repo
-                        val localVenues = arrayListOf<Venue>()
-                        for(venue in venueList)
-                            localVenues.add(Venue(venue.id,
-                                    venue.name,
-                                    venue.location?.address,
-                                    venue.location?.distance,
-                                    venue.location?.lng, venue.location?.lat))
+                            val localVenues = getLocalRepoVenues(venueList)
 
-                        onSuccess(localVenues)
-                    } else {
-                        onError(response.errorBody()?.string() ?: "Unknown error")
+                            onSuccess(localVenues)
+                        } else {
+                            onError(response.errorBody()?.string() ?: "Unknown error")
+                        }
                     }
                 }
-            }
-    )
+        )
+}
+
+
+private fun getLocalRepoVenues(venueList: List<Venues>): List<Venue> {
+
+    // ToDo change the way to adapt backend venue class to local repo
+    val localVenues = arrayListOf<Venue>()
+    for (venue in venueList)
+        localVenues.add(Venue(venue.id,
+                venue.name,
+                venue.location?.address,
+                venue.location?.distance,
+                venue.location?.lng, venue.location?.lat))
+    return localVenues
+
 }
 
 /**
@@ -93,9 +95,9 @@ interface FoursquareService {
      */
     @GET("search?$API_KEY")
     fun searchVenues(@Query("query") query: String,
-                     @Query("ll") ll: String,
-                     @Query("limit") limit: Int,
-                     @Query("intent") intent: String): Call<FoursquareSearchResponse>
+                     @Query("ll") latLng: String,
+                     @Query("limit") limit: Number,
+                     @Query("intent") intent: String ): Call<FoursquareSearchResponse>
 
     companion object {
         private const val API_KEY = "client_id=$client_id&client_secret=$client_secret&v=$version"
@@ -111,7 +113,6 @@ interface FoursquareService {
             return Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .client(client)
-//                    .addConverterFactory(MoshiConverterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
                     .create(FoursquareService::class.java)
