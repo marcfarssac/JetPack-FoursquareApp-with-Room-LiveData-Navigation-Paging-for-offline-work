@@ -9,12 +9,12 @@ import java.util.List;
 /**
  * Class to process location results.
  */
-public class LocationResultHelper {
+public class LocationHelper {
 
     private final static String DEFAULT_LOCATION_IS_NONE = "41.428154,2.165668";
     private final static String KEY_DEFAULT_LOCATION = "key default location";
 
-    LocationResultHelper() {
+    LocationHelper() {
     }
 
     public static String getLastLocation(Context context) {
