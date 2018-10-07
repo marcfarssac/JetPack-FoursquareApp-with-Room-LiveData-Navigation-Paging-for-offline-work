@@ -34,8 +34,8 @@ class MainActivityViewModel(private val repository: FoursquareRepository) : View
     /**
      * Search a repository based on a query string.
      */
-    fun searchVenue(queryString: String, latLng: String, limit: Int, intent: String) {
-        newQuery.postValue(FoursquareCallParams(queryString, latLng, limit, intent ))
+    fun searchVenue(callParams: FoursquareCallParams) {
+        newQuery.postValue(callParams)
 
     }
 
@@ -43,4 +43,6 @@ class MainActivityViewModel(private val repository: FoursquareRepository) : View
      * Get the last query value.
      */
     fun lastQueryValue(): String? = newQuery.value?.query
+
+
 }
