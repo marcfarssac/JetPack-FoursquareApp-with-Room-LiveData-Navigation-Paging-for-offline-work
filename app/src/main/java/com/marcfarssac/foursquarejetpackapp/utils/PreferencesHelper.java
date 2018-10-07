@@ -9,11 +9,11 @@ import android.preference.PreferenceManager;
 public class PreferencesHelper {
 
     private final static String SHOW_VENUES_LOCATION = "show venues location";
-    private final static String SHOW_VENUES_LOCATION_CLOSE = "global";
+    public final static String SHOW_VENUES_LOCATION_CLOSE = "global";
     public final static String SHOW_VENUES_LOCATION_ALL = "checkin";
 
     private final static String SHOW_VENUES_FORMAT = "show venues format";
-    private final static String SHOW_VENUES_FORMAT_MAP = "map";
+    public final static String SHOW_VENUES_FORMAT_MAP = "map";
     public final static String SHOW_VENUES_FORMAT_AS_LIST = "list";
 
     PreferencesHelper() {}
