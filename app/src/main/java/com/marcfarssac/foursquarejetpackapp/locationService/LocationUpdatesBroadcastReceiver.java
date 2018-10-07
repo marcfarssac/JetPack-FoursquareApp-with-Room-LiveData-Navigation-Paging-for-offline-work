@@ -39,12 +39,11 @@ public class LocationUpdatesBroadcastReceiver extends BroadcastReceiver {
                 LocationResult result = LocationResult.extractResult(intent);
                 if (result != null) {
                     List<Location> locations = result.getLocations();
-                    LocationResultHelper locationResultHelper = new LocationResultHelper(
-                            context, locations);
+                    LocationResultHelper locationResultHelper = new LocationResultHelper();
                     // Save the location data to SharedPreferences.
-                    locationResultHelper.saveResults();
+                    locationResultHelper.saveLastLocation(context, locations);
                     // Show notification with the location data.
-                    Log.i(TAG, LocationResultHelper.getLocationText(context));
+                    Log.i(TAG, LocationResultHelper.getLastLocation(context));
                 }
             }
         }

@@ -53,7 +53,7 @@ The NavHostFragment required for pagination to work uses AndroidX as it can be s
 
 ### Paging
 
-The Paging Library loads data gradually and gracefully within the app's. It works with the local database, a Web API service, the ViewModel and the UI.
+The Paging Library loads data gradually and gracefully within the app's. It works with the local database, a Web API api, the ViewModel and the UI.
 
 ![Paging diagram](https://user-images.githubusercontent.com/18221570/46413907-47aaee00-c722-11e8-9924-fb10ce179f84.png)
 
@@ -80,6 +80,11 @@ Sophisticated location platform tools to power the way software interacts with r
 ### Places Api
 
 This App uses Foursquare Developers [regular endpoints](https://developer.foursquare.com/docs/api/endpoints) with basic venue data. Out of the many endpoints, the [Search for Venues](https://developer.foursquare.com/docs/api/venues/search) will be used in the first place.
+
+## Data Model
+
+
+
 
 ## Google Api
 

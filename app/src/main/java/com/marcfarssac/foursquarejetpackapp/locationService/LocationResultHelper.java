@@ -11,75 +11,31 @@ import java.util.List;
  */
 public class LocationResultHelper {
 
-    private final static String KEY_LOCATION_LAT = "location-lat";
-    private final static String KEY_LOCATION_LON = "location-lon";
+    private final static String DEFAULT_LOCATION_IS_NONE = "41.428154,2.165668";
+    private final static String KEY_DEFAULT_LOCATION = "key default location";
 
-    private final static String YOUR_MD_LAT = "51.520677";
-    private final static String YOUR_MD_LON = "-0.135897";
-
-    private final Context mContext;
-    private final List<Location> mLocations;
-
-    LocationResultHelper(Context context, List<Location> locations) {
-        mContext = context;
-        mLocations = locations;
+    LocationResultHelper() {
     }
 
-    private String getLastLocationLat() {
+    public static String getLastLocation(Context context) {
 
-        String mLastLocationLat = YOUR_MD_LAT;
-
-        if (mLocations.isEmpty()) {
-            return mLastLocationLat;
-        }
-
-        for (Location location : mLocations) {
-            mLastLocationLat = String.valueOf(location.getLatitude());
-        }
-        return mLastLocationLat;
-    }
-    private String getLastLocationLon() {
-
-        String mLastLocationLon = YOUR_MD_LON;
-
-        if (mLocations.isEmpty()) {
-            return mLastLocationLon;
-        }
-
-        for (Location location : mLocations) {
-            mLastLocationLon = String.valueOf(location.getLongitude());
-        }
-        return mLastLocationLon;
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(KEY_DEFAULT_LOCATION, DEFAULT_LOCATION_IS_NONE);
     }
 
     /**
      * Saves location result as a string to {@link android.content.SharedPreferences}.
      */
-    void saveResults() {
-        PreferenceManager.getDefaultSharedPreferences(mContext)
+    public void saveLastLocation(Context context, List<Location> mLocations) {
+
+        String lastLocation = DEFAULT_LOCATION_IS_NONE;
+
+        if (mLocations.size()>0)
+            lastLocation = mLocations.get(mLocations.size()-1).getLongitude() + "," + mLocations.get(mLocations.size()-1).getLatitude();
+
+        PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
-                .putString(KEY_LOCATION_LAT, getLastLocationLat())
-                .putString(KEY_LOCATION_LON, getLastLocationLon())
+                .putString(KEY_DEFAULT_LOCATION, lastLocation)
                 .apply();
-    }
-
-    /**
-     * Fetches location results from {@link android.content.SharedPreferences}.
-     */
-    private static String getSavedLon(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(KEY_LOCATION_LON, YOUR_MD_LON);
-    }
-
-    /**
-     * Fetches location results from {@link android.content.SharedPreferences}.
-     */
-    private static String getSavedLat(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(KEY_LOCATION_LAT, YOUR_MD_LAT);
-    }
-
-    static String getLocationText(Context context) {
-        return "("+getSavedLat(context)+"," +getSavedLon(context)+")";
     }
 }
