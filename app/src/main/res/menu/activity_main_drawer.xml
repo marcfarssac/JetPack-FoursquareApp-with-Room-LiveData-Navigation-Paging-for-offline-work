@@ -7,11 +7,11 @@
         <item
             android:id="@+id/nav_search"
             android:icon="@drawable/ic_search"
-            android:title="@string/search_hint" />
+            android:title="@string/show_venues_as_list" />
         <item
             android:id="@+id/nav_location"
             android:icon="@drawable/ic_location"
-            android:title="@string/show_venues_map" />
+            android:title="@string/show_venues_on_map" />
     </group>
 
 </menu>
