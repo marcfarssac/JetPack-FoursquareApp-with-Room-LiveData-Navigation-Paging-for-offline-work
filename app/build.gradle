@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 apply plugin: 'kotlin-android-extensions'
 
@@ -38,38 +39,50 @@ android {
 dependencies {
 
     // Kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$rootProject.kotlinVersion"
+    kapt "android.arch.lifecycle:compiler:$archComponentsVersion"
+    kapt "android.arch.persistence.room:compiler:$roomVersion"
 
+    // Android SDK misc
     implementation 'com.android.support:design:' + rootProject.supportLibVersion
     implementation 'com.android.support:appcompat-v7:' + rootProject.supportLibVersion
     implementation 'com.android.support:cardview-v7:' + rootProject.supportLibVersion
     implementation 'com.android.support:recyclerview-v7:' + rootProject.supportLibVersion
-    implementation 'com.android.support.constraint:constraint-layout:' + rootProject.constraintLayoutVersion
 
     // architecture components
     implementation "android.arch.lifecycle:extensions:$archComponentsVersion"
     implementation "android.arch.lifecycle:runtime:$archComponentsVersion"
-    implementation "android.arch.persistence.room:runtime:$roomVersion"
-    implementation "android.arch.paging:runtime:$pagingVersion"
-    kapt "android.arch.lifecycle:compiler:$archComponentsVersion"
-    kapt "android.arch.persistence.room:compiler:$roomVersion"
 
+    // Paging
+    implementation "android.arch.paging:runtime:$pagingVersion"
+
+    // Room
+    implementation "android.arch.persistence.room:runtime:$roomVersion"
+    annotationProcessor "android.arch.persistence.room:compiler:$roomVersion" // use kapt for Kotlin
+
+    // Room debug database
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
+
+    // Room test helpers
+    testImplementation "android.arch.persistence.room:testing:$roomVersion"
+
     // Navigation
     implementation 'android.arch.navigation:navigation-fragment:' + rootProject.navigationVersion
     implementation 'android.arch.navigation:navigation-ui:' + rootProject.navigationVersion
 
+    // Constraint layout
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation 'android.arch.lifecycle:extensions:1.1.1'
-    testImplementation 'junit:junit:4.12'
+    implementation 'com.android.support.constraint:constraint-layout:' + rootProject.constraintLayoutVersion
 
     // Android Testing Support Library's runner and rules
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "com.android.support.test:runner:$rootProject.ext.runnerVersion"
     androidTestImplementation "com.android.support.test:rules:$rootProject.ext.rulesVersion"
 
-    // Espresso UI Testing dependencies.
+    // Junit
+    testImplementation 'junit:junit:4.12'
 
+    // Espresso UI Testing dependencies.
     androidTestImplementation "com.android.support.test.espresso:espresso-core:$rootProject.ext.espressoVersion"
     androidTestImplementation "com.android.support.test.espresso:espresso-contrib:$rootProject.ext.espressoVersion"
     androidTestImplementation "com.android.support.test.espresso:espresso-intents:$rootProject.ext.espressoVersion"
@@ -82,4 +95,8 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit-mock:$retrofitVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttpLoggingInterceptorVersion"
 
+    // Converter for Retrofit
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.moshi:moshi-kotlin:1.7.0'
+    implementation 'com.squareup.retrofit2:converter-moshi:2.4.0'
 }
