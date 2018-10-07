@@ -2,6 +2,9 @@ package com.marcfarssac.foursquarejetpackapp
 
 import android.Manifest
 import android.app.PendingIntent
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
+import android.arch.paging.PagedList
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -15,19 +18,29 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.DividerItemDecoration
 import android.util.Log
+import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.TextView
+import android.view.inputmethod.EditorInfo
+
+import android.widget.Toast
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
+import com.marcfarssac.foursquarejetpackapp.data.FoursquareBoundaryCallback
 import com.marcfarssac.foursquarejetpackapp.locationService.LocationResultHelper
 import com.marcfarssac.foursquarejetpackapp.locationService.LocationUpdatesBroadcastReceiver
+import com.marcfarssac.foursquarejetpackapp.model.Venue
+import com.marcfarssac.foursquarejetpackapp.ui.VenuesAdapter
+import com.marcfarssac.foursquarejetpackapp.utils.Injection
+import com.marcfarssac.foursquarejetpackapp.utils.PreferencesHelper
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.content_main.*
 
 @Suppress("SpellCheckingInspection")
 class MainActivity : AppCompatActivity(),
@@ -38,10 +51,13 @@ class MainActivity : AppCompatActivity(),
 
     companion object Constants {
         private const val TAG = "MainActivity"
-        private const val REQUEST_PERMISSIONS_REQUEST_CODE = 34
-        private const val UPDATE_INTERVAL = (10 * 1000).toLong()
-        private const val FASTEST_UPDATE_INTERVAL = UPDATE_INTERVAL / 2
-        private const val MAX_WAIT_TIME = UPDATE_INTERVAL * 3
+        private const val REQUEST_PERMISSIONS_REQUEST_CODE: Int = 34
+        // We don't really wait for continuous updates, still we want the location fast
+        private const val UPDATE_INTERVAL: Long = (10 * 1000).toLong()
+        private const val FASTEST_UPDATE_INTERVAL: Long = UPDATE_INTERVAL / 2
+        private const val MAX_WAIT_TIME: Long = UPDATE_INTERVAL * 3
+        private const val LAST_SEARCH_QUERY: String = "last_search_query"
+        private const val DEFAULT_QUERY = "Hard Rock Cafe"
     }
 
     /**
@@ -54,23 +70,48 @@ class MainActivity : AppCompatActivity(),
      */
     private var mGoogleApiClient: GoogleApiClient? = null
 
-    // UI Widgets.
-    private var mCurrentLonView: TextView? = null
-    private var mCurrentLatView: TextView? = null
+    private lateinit var viewModel: MainActivityViewModel
+    private val adapter = VenuesAdapter()
+    private var updatingLocation = false
+    private var showVenuesCloser = false
+    private var showVenuesOnScreenAsMap = false
 
+    private lateinit var mLatLng: String
+    private var mIntent: String = "global"
+    private var mDispaly: String = PreferencesHelper.SHOW_VENUES_FORMAT_AS_LIST
+    private var mLimit = FoursquareBoundaryCallback.NETWORK_PAGE_SIZE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        mCurrentLatView = findViewById<View>(R.id.mCurrentLatView) as TextView
-        mCurrentLonView = findViewById<View>(R.id.mCurrentLonView) as TextView
+        mLatLng = LocationResultHelper.getLastLocation(this)
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, R.string.map_show_locations_around, Snackbar.LENGTH_LONG)
-                    .show()
-        }
+        progressBar.visibility = View.VISIBLE
+
+        // get the view model
+        viewModel = ViewModelProviders.of(this, Injection.provideViewModelFactory(this))
+                .get(MainActivityViewModel::class.java)
+
+//        Switch button not working with Kotlin? //To Do review it
+//
+//        switchForActionBar.setOnClickListener({ v -> showProgressBar()})
+//        switchForActionBar.setOnClickListener { _ -> showProgressBar()}
+//        switch_button.setOnClickListener { v->
+//            if (v.isEnabled ) doSomething()
+//            else doSomethingElse() }
+
+
+        // add dividers between RecyclerView's row items
+        val decoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+        list.addItemDecoration(decoration)
+
+        initAdapter()
+        val query = savedInstanceState?.getString(MainActivity.LAST_SEARCH_QUERY)
+                ?: MainActivity.DEFAULT_QUERY
+        viewModel.searchVenue(query, mLatLng, mLimit, mIntent)
+        initSearch(query)
 
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -78,14 +119,74 @@ class MainActivity : AppCompatActivity(),
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
+    }
 
-        // Check if the user revoked runtime permissions.
-        if (!checkPermissions()) {
-            requestPermissions()
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(MainActivity.LAST_SEARCH_QUERY, viewModel.lastQueryValue())
+    }
+
+    private fun initAdapter() {
+
+        list.adapter = adapter
+        viewModel.venues.observe(this, Observer<PagedList<Venue>> {
+            Log.d("Activity", "list: ${it?.size}")
+            showEmptyList(it?.size == 0)
+            adapter.submitList(it)
+        })
+        viewModel.networkErrors.observe(this, Observer<String> {
+            Toast.makeText(this, "\uD83D\uDE28 Wooops $it", Toast.LENGTH_LONG).show()
+        })
+    }
+
+    // To To check why the indeterminated progressbar is not moving in Kotlin ??
+    private fun showProgressBar() {
+        progressBar.visibility = View.VISIBLE
+    }
+
+    private fun hideProgressBar() {
+        progressBar.visibility = View.GONE
+    }
+
+    private fun initSearch(query: String) {
+        edit_text_search_venue.setText(query)
+
+        edit_text_search_venue.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_GO) {
+                updateVenueListFromInput()
+                true
+            } else {
+                false
+            }
         }
+        edit_text_search_venue.setOnKeyListener { _, keyCode, event ->
+            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                updateVenueListFromInput()
+                true
+            } else {
+                false
+            }
+        }
+    }
 
-        buildGoogleApiClient()
+    private fun updateVenueListFromInput() {
+        edit_text_search_venue.text.trim().let {
+            if (it.isNotEmpty()) {
+                list.scrollToPosition(0)
+                viewModel.searchVenue(it.toString(), mLatLng, mLimit, mIntent)
+                adapter.submitList(null)
+            }
+        }
+    }
 
+    private fun showEmptyList(show: Boolean) {
+        if (show) {
+            emptyList.visibility = View.VISIBLE
+            list.visibility = View.GONE
+        } else {
+            emptyList.visibility = View.GONE
+            list.visibility = View.VISIBLE
+        }
     }
 
     override fun onBackPressed() {
@@ -99,6 +200,25 @@ class MainActivity : AppCompatActivity(),
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
+
+        val menuVenuesLocation: MenuItem = menu.findItem(R.id.option_show_venues_location)
+        var menuVenuesLocatoinText = getString(R.string.option_show_venues_all)
+        val preferredVenuesLocation = PreferencesHelper.getPreferredVenuesLocation(this)
+
+        if (preferredVenuesLocation != PreferencesHelper.SHOW_VENUES_LOCATION_ALL)
+            menuVenuesLocatoinText = getString(R.string.option_show_venues_closest)
+
+        menuVenuesLocation.title = menuVenuesLocatoinText
+
+        val menuVenuesDisplayFormat: MenuItem = menu.findItem(R.id.option_show_venues_format)
+        var menuVenuesDisplayFormatText = getString(R.string.option_show_venues_on_screen_as_list)
+        val preferredVenuesDisplayFormat = PreferencesHelper.getPreferredVenuesDisplayType(this)
+
+        if (preferredVenuesDisplayFormat != PreferencesHelper.SHOW_VENUES_FORMAT_AS_LIST)
+            menuVenuesDisplayFormatText = getString(R.string.option_show_venues_on_screen_as_map)
+
+        menuVenuesDisplayFormat.title = menuVenuesDisplayFormatText
+
         return true
     }
 
@@ -107,14 +227,27 @@ class MainActivity : AppCompatActivity(),
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         when (item.itemId) {
-            R.id.action_location -> {
-                if (mGoogleApiClient!=null)  {
-                    if (mGoogleApiClient!!.isConnected) {
-                        requestLocationUpdate()
-                        navigateToMap()
-                        return true
-                    }
+            R.id.option_show_venues_location -> {
+                if (showVenuesCloser) {
+                    item.title = getString(R.string.option_show_venues_all)
+
+                } else {
+                    item.title = getString(R.string.option_show_venues_closest)
                 }
+                showVenuesCloser = !showVenuesCloser
+                PreferencesHelper.savePreferredVenuesLocation(this, showVenuesCloser)
+                return true
+            }
+            R.id.option_show_venues_format -> {
+
+                if (showVenuesOnScreenAsMap) {
+                    item.title = getString(R.string.option_show_venues_on_screen_as_list)
+                } else {
+                    item.title = getString(R.string.option_show_venues_on_screen_as_map)
+                }
+                showVenuesOnScreenAsMap = !showVenuesOnScreenAsMap
+                PreferencesHelper.savePreferredVenuesDisplayType(this, showVenuesOnScreenAsMap)
+                return true
             }
             else -> super.onOptionsItemSelected(item)
         }
@@ -129,7 +262,7 @@ class MainActivity : AppCompatActivity(),
             }
             R.id.nav_location -> {
 
-                if (mGoogleApiClient!=null)  {
+                if (mGoogleApiClient != null) {
                     if (mGoogleApiClient!!.isConnected) {
                         requestLocationUpdate()
                         navigateToMap()
@@ -148,16 +281,10 @@ class MainActivity : AppCompatActivity(),
                 .registerOnSharedPreferenceChangeListener(this)
     }
 
-
-    override fun onResume() {
-        super.onResume()
-        mCurrentLatView?.text = LocationResultHelper.getSavedLat(this)
-        mCurrentLonView?.text = LocationResultHelper.getSavedLon(this)
-    }
-
     override fun onStop() {
         PreferenceManager.getDefaultSharedPreferences(this)
                 .unregisterOnSharedPreferenceChangeListener(this)
+
         super.onStop()
     }
 
@@ -206,12 +333,10 @@ class MainActivity : AppCompatActivity(),
                 .enableAutoManage(this, this)
                 .addApi(LocationServices.API)
                 .build()
-        createLocationRequest()
     }
 
     override fun onConnected(bundle: Bundle?) {
         Log.i(TAG, "GoogleApiClient connected")
-            requestLocationUpdate()
     }
 
     /**
@@ -334,15 +459,18 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, s: String) {
-        removeLocationUpdate()
-        mCurrentLatView?.text = LocationResultHelper.getSavedLat(this)
-        mCurrentLonView?.text = LocationResultHelper.getSavedLon(this)
+        mLatLng = LocationResultHelper.getLastLocation(this)
+        mIntent = PreferencesHelper.getPreferredVenuesLocation(this)
+        mDispaly = PreferencesHelper.getPreferredVenuesDisplayType(this)
     }
 
     /**
      * Handles the Request Updates button and requests start of location updates.
      */
     private fun requestLocationUpdate() {
+
+        updatingLocation = true
+
         try {
             Log.i(TAG, "Starting location updates")
 
@@ -361,13 +489,23 @@ class MainActivity : AppCompatActivity(),
     private fun removeLocationUpdate() {
         Log.i(TAG, "Removing location updates")
 
-        // ToDo substitute deprecated FuseLocationApi
-        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient,
-                getPendingIntent())
+        if (updatingLocation) {
+
+            updatingLocation = false
+            // ToDo substitute deprecated FuseLocationApi
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient,
+                    getPendingIntent())
+        }
     }
 
     private fun navigateToMap() {
-        // ToDo show Map and venues close by
+        // ToDo show Map and venueDetails close by
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        removeLocationUpdate()
+    }
+
 
 }
