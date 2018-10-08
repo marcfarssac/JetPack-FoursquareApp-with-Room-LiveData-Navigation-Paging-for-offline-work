@@ -5,6 +5,8 @@ Simple Android app that connects to the [Foursquare API]( https://developer.four
 
 The aim of the App is to show a list of venues obtained from a backend repository. 
 
+
+
 Data will be cached locally on devices running the App using the [Room persistence library](https://developer.android.com/topic/libraries/architecture/room). Thanks to the [LiveData](https://developer.android.com/topic/libraries/architecture/livedata) observable data holder class, local data will be updated whenever changes occur on the backend. This will allow the user to view the list of venues also off-line. 
 
 Since the number of venues might be very big, the App uses the [Page Library](https://developer.android.com/topic/libraries/architecture/paging/) to loads pages of data gracefully, meaning that searches resulting in big amounts of data would be called in chunks of a few items called pages. The library manages the loading of data when scrolling down the list triggering the required actions to be supplied with additional data. Calls will be made in the first place to the local database and then to the remote repository. 
@@ -102,11 +104,20 @@ The gradle file contains the <b>androidTestCompile</b> dependencies for the Supp
 
 ## Current status
 
-- Initial commit with architecture summary
+- As explained in the above design, storing results for off-line check of Venues lead to the implementation of a repository. To deal with a possibly very big number of records a paging solution was selected.
+- At present point the results from the backend are not propagating successfully to the UI although the backend call is working successfully. On a root cause analysis it has been seen that the
+ UI LiveData objects are updated before the call from the backend is received leading to an empty UI. It is currently being assumed that these LiveData objects are updated before we have the real results. One thing
+ that could be related to this is the fact that our backend repository and our local database do not share the same data model (This has been a design decision after seeing that most of the supplied 
+ backend data is not required for the UI). Results from the backend are then adapted to the model before this should propagate to the UI. An improved adapter could help to solve the problem and this is the current line of work..    
+
+The current source contains the architecture of the application. Tests will be implemented as the development of the application moves on.
+
+Last but not least it needs to be said that one objective of this project was to get involved with as much JetPack Components as possible. Until this point the architecture is in place to do so and shall happen in the coming days.
 
 ## Author
 
-* **Marc Farssac** - *Initial work* 
+* **Marc Farssac** - *Initial work* 4.10.2018
+* **Marc Farssac** - *Work in progress* 8.10.2018
 
 ## License
 
