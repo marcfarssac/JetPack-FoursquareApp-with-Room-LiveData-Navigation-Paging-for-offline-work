@@ -170,6 +170,7 @@ class MainActivity : AppCompatActivity(),
         edit_text_search_venue.text.trim().let {
             if (it.isNotEmpty()) {
                 list.scrollToPosition(0)
+                backendCallParams.query = it.toString()
                 viewModel.searchVenue(backendCallParams)
                 adapter.submitList(null)
             }
