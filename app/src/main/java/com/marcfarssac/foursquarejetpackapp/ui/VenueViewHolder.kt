@@ -20,7 +20,7 @@ class VenueViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     init {
         view.setOnClickListener {
-//            venue?.url?.let { url ->
+            //            venue?.url?.let { url ->
 //                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
 //                view.context.startActivity(intent)
 //            }
@@ -48,6 +48,12 @@ class VenueViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             addressVisibility = View.VISIBLE
         }
         address.visibility = addressVisibility
+
+        if (venue?.distance!=0) {
+            val resources = this.itemView.context.resources
+            distance.text = resources.getString(R.string.distance, venue?.distance.toString())
+            distance.visibility = View.VISIBLE
+        } else distance.visibility= View.GONE
 
     }
 

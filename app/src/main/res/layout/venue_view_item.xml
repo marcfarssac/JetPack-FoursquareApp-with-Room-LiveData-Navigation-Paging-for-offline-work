@@ -35,4 +35,16 @@
         tools:ignore="UnusedAttribute"
         tools:text="Venue address"/>
 
+    <TextView
+        android:id="@+id/venue_distance"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:paddingVertical="@dimen/row_item_margin_vertical"
+        android:text="@string/distance"
+        android:textSize="@dimen/venue_description_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/venue_address"
+        tools:ignore="RtlCompat"/>
+
 </android.support.constraint.ConstraintLayout>
