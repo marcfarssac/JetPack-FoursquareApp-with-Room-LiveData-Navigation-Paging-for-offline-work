@@ -1,5 +1,6 @@
 package com.marcfarssac.foursquarejetpackapp.data
 
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.paging.PagedList
 
@@ -15,7 +16,7 @@ import com.marcfarssac.foursquarejetpackapp.model.Venue
  */
 
 class FoursquareBoundaryCallback(
-        private val fourSquareQueryParams: FoursquareCallParams,
+        private val backendCallParams: FoursquareCallParams,
         private val service: FoursquareService,
         private val cache: FoursquareLocalCache
 ) : PagedList.BoundaryCallback<Venue>() {
@@ -24,9 +25,13 @@ class FoursquareBoundaryCallback(
         const val NETWORK_PAGE_SIZE = 50
     }
 
+    // keep the last requested page.
+// When the request is successful, increment the page number.
+    private var lastRequestedPage = 1
+
     private val _networkErrors = MutableLiveData<String>()
     // LiveData of network errors.
-    val networkErrors: MutableLiveData<String>
+    val networkErrors: LiveData<String>
         get() = _networkErrors
 
     // avoid triggering multiple requests in the same time
@@ -36,19 +41,19 @@ class FoursquareBoundaryCallback(
     }
 
     override fun onItemAtEndLoaded(itemAtEnd: Venue) {
-        requestAndSaveData()
+        super.onItemAtEndLoaded(itemAtEnd)
     }
     private fun requestAndSaveData() {
-        if (isRequestInProgress) return
+        if ((isRequestInProgress) || (lastRequestedPage>1))return
 
         isRequestInProgress = true
-        searchVenue(service, fourSquareQueryParams ,{ venues ->
+        searchVenue(service, backendCallParams ,{ venues ->
 
             cache.insert(venues) {
                 isRequestInProgress = false
             }
         }, { error ->
-            networkErrors.postValue(error)
+//            networkErrors.postValue(error)
             isRequestInProgress = false
         })
     }
