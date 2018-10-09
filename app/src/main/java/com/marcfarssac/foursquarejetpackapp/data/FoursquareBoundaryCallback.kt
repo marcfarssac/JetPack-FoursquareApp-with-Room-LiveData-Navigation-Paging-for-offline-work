@@ -20,10 +20,6 @@ class FoursquareBoundaryCallback(
         private val cache: FoursquareLocalCache
 ) : PagedList.BoundaryCallback<Venue>() {
 
-    companion object {
-        const val NETWORK_PAGE_SIZE = 50
-    }
-
     private val _networkErrors = MutableLiveData<String>()
     // LiveData of network errors.
     val networkErrors: MutableLiveData<String>
