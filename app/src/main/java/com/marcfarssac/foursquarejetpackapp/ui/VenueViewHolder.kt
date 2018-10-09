@@ -14,6 +14,7 @@ import com.marcfarssac.foursquarejetpackapp.model.Venue
 class VenueViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val name: TextView = view.findViewById(R.id.venue_name)
     private val address: TextView = view.findViewById(R.id.venue_address)
+    private val distance: TextView = view.findViewById(R.id.venue_distance)
 
     private var venue: Venue? = null
 
@@ -38,7 +39,6 @@ class VenueViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     private fun showRepoData(venue: Venue) {
         this.venue = venue
-
         name.text = venue.name
 
         // if the description is missing, hide the TextView

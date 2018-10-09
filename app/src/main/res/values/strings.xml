@@ -20,7 +20,7 @@
 
     // Search
     <string name="no_results">No results 😓</string>
-    <string name="show_venues_as_list">Venue</string>
+    <string name="show_venues_as_list">Venues list</string>
 
     <string name="option_show_venues_closest">Closest</string>
     <string name="option_show_venues_all">All Venues</string>
