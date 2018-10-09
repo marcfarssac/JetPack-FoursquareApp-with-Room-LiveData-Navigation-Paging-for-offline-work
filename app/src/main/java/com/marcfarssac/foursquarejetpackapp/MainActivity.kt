@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity(),
         private const val MAX_WAIT_TIME: Long = UPDATE_INTERVAL * 3
         private const val LAST_SEARCH_QUERY: String = "last_search_query"
         private const val DEFAULT_QUERY = "Hard Rock Cafe"
-        private const val DEFAULT_QUERY_LIMIT = 20
+        private const val DEFAULT_QUERY_LIMIT = 50
         private const val DEFAULT_LAT_LONG = "41.428154,2.165668"
         private const val DEFAULT_INTENT = "global"
     }
