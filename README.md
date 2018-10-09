@@ -104,20 +104,14 @@ The gradle file contains the <b>androidTestCompile</b> dependencies for the Supp
 
 ## Current status
 
-- As explained in the above design, storing results for off-line check of Venues lead to the implementation of a repository. To deal with a possibly very big number of records a paging solution was selected.
-- At present point the results from the backend are not propagating successfully to the UI although the backend call is working successfully. On a root cause analysis it has been seen that the
- UI LiveData objects are updated before the call from the backend is received leading to an empty UI. It is currently being assumed that these LiveData objects are updated before we have the real results. One thing
- that could be related to this is the fact that our backend repository and our local database do not share the same data model (This has been a design decision after seeing that most of the supplied 
- backend data is not required for the UI). Results from the backend are then adapted to the model before this should propagate to the UI. An improved adapter could help to solve the problem and this is the current line of work..    
+09 October 2018
 
-The current source contains the architecture of the application. Tests will be implemented as the development of the application moves on.
-
-Last but not least it needs to be said that one objective of this project was to get involved with as much JetPack Components as possible. Until this point the architecture is in place to do so and shall happen in the coming days.
+Solved SQL query parameters and backend calls to display a list of venues containing one or all the words searched. App up & running with work in progress of additional features
 
 ## Author
 
 * **Marc Farssac** - *Initial work* 4.10.2018
-* **Marc Farssac** - *Work in progress* 8.10.2018
+* **Marc Farssac** - *Implementing additional features* 9.10.2018
 
 ## License
 
