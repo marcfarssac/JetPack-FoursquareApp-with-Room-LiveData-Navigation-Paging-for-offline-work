@@ -21,7 +21,8 @@ class FoursquareRepository(
         Log.d("FoursquareRepository", "New query: ${fourSquareQuery.query}")
 
         // Get data source factory from the local cache
-        val dataSourceFactory = cache.venuesByName(fourSquareQuery.query)
+        val query = '%'+fourSquareQuery.query+'%'
+        val dataSourceFactory = cache.venuesByName(query)
         // Construct the boundary callback
         val boundaryCallback = FoursquareBoundaryCallback(fourSquareQuery, service, cache)
         val networkErrors = boundaryCallback.networkErrors
