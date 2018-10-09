@@ -280,7 +280,7 @@ class MainActivity : AppCompatActivity(),
             R.id.option_show_venues_on_screen_as_map -> {
                 PreferencesHelper.savePreferredVenuesDisplayType(this, true)
                 showMapOfVenues()
-                }
+            }
         }
 
         drawer_layout.closeDrawer(GravityCompat.START)
@@ -438,7 +438,7 @@ class MainActivity : AppCompatActivity(),
                 grantResults.isEmpty() -> // If user interaction was interrupted, the permission request is cancelled and you
                     // receive empty arrays.
                     Log.i(TAG, "User interaction was cancelled.")
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED -> // Permission was granted. Kick off the process of building and connecting
+                grantResults[0] == PackageManager.PERMISSION_GRANTED -> // Permission was granted. Kick off the process of building and connecting
                     // GoogleApiClient.
                     getCurrentLocation()
                 else -> {

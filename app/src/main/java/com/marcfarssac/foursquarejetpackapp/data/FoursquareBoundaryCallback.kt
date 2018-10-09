@@ -21,10 +21,6 @@ class FoursquareBoundaryCallback(
         private val cache: FoursquareLocalCache
 ) : PagedList.BoundaryCallback<Venue>() {
 
-    companion object {
-        const val NETWORK_PAGE_SIZE = 50
-    }
-
     // keep the last requested page.
 // When the request is successful, increment the page number.
     private var lastRequestedPage = 1
@@ -41,7 +37,11 @@ class FoursquareBoundaryCallback(
     }
 
     override fun onItemAtEndLoaded(itemAtEnd: Venue) {
-        super.onItemAtEndLoaded(itemAtEnd)
+        requestAndSaveData()
+    }
+
+    override fun onItemAtFrontLoaded(itemAtFront: Venue) {
+        requestAndSaveData()
     }
     private fun requestAndSaveData() {
         if ((isRequestInProgress) || (lastRequestedPage>1))return
@@ -51,6 +51,7 @@ class FoursquareBoundaryCallback(
 
             cache.insert(venues) {
                 isRequestInProgress = false
+                lastRequestedPage++
             }
         }, { error ->
 //            networkErrors.postValue(error)

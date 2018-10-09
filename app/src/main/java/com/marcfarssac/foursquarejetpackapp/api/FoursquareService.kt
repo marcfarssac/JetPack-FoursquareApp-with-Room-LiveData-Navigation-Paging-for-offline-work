@@ -19,8 +19,10 @@ import retrofit2.http.Query
 @Suppress("SpellCheckingInspection")
 private const val TAG = "Foursquare"
 
-private const val client_id = "WFW1MAYPFSDLAOKIKZFXDBFVUU0YO4DQYJFP0W5E1DCHWZ44"
-private const val client_secret = "ZF1ALSEJ1XDRU3QZJ3ICPXXNG0BBXIKPI5PU3KYGO1ORLX4P"
+//private const val client_id_mf = "WFW1MAYPFSDLAOKIKZFXDBFVUU0YO4DQYJFP0W5E1DCHWZ44"
+private const val client_id = "JDH5PWEDEI2LFYVJM2W20D44XAJ2SJUXWNOV1W05FI0VMEEZ"
+//private const val client_secret_mf = "ZF1ALSEJ1XDRU3QZJ3ICPXXNG0BBXIKPI5PU3KYGO1ORLX4P"
+private const val client_secret = "JJOJYCEYWJSBBY1BZLPFSQ1RXMGCMQBLYPSXOJXTFQ31M50K"
 private const val version = "20181004"
 
 /**

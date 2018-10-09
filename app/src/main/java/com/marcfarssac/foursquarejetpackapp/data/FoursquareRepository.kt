@@ -22,6 +22,7 @@ class FoursquareRepository(
 
         // Get data source factory from the local cache
         val query = '%'+fourSquareQuery.query.replace(" ", "%")+'%'
+//        val query = '%'+fourSquareQuery.query+'%'
         val dataSourceFactory = cache.venuesByName(query)
         // Construct the boundary callback
         val boundaryCallback = FoursquareBoundaryCallback(fourSquareQuery, service, cache)
