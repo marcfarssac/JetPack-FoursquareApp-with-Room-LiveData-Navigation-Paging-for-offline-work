@@ -61,7 +61,7 @@ fun searchVenue(
                         if (response.isSuccessful) {
                             val venueList = response.body()?.response?.venues ?: emptyList()
 
-                            val localVenues = getLocalRepoVenues(venueList)
+                            val localVenues = getLocalRepoVenues(fourSquaryQueryParams.query, venueList)
 
                             onSuccess(localVenues)
                         } else {
@@ -73,16 +73,17 @@ fun searchVenue(
 }
 
 
-private fun getLocalRepoVenues(venueList: List<Venues>): List<Venue> {
+private fun getLocalRepoVenues(query: String, venueList: List<Venues>): List<Venue> {
 
     // ToDo change the way to adapt backend venue class to local repo
     val localVenues = arrayListOf<Venue>()
     for (venue in venueList)
         localVenues.add(Venue(venue.id,
+                query,
                 venue.name,
-                venue.location?.address,
-                venue.location?.distance,
-                venue.location?.lng, venue.location?.lat))
+                venue.location.address,
+                venue.location.distance,
+                venue.location.lng, venue.location.lat))
     return localVenues
 
 }
@@ -104,6 +105,8 @@ interface FoursquareService {
     companion object {
         private const val API_KEY = "client_id=$client_id&client_secret=$client_secret&v=$version"
         private const val BASE_URL = "https://api.foursquare.com/v2/venues/"
+
+
 
         fun create(): FoursquareService {
             val logger = HttpLoggingInterceptor()

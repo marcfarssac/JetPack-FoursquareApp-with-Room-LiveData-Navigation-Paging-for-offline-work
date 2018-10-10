@@ -11,7 +11,7 @@ import com.marcfarssac.foursquarejetpackapp.model.Venue
  */
 @Database(
         entities = [Venue::class],
-        version = 1,
+        version = 2,
         exportSchema = false
 )
 abstract class FoursquareDatabase : RoomDatabase() {
