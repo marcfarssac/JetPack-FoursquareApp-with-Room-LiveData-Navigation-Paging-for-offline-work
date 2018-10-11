@@ -24,8 +24,8 @@
 
     <string name="option_show_venues_closest">Closest</string>
     <string name="option_show_venues_all">All Venues</string>
-    <string name="option_show_venues_on_screen_as_map">On Map</string>
-    <string name="option_show_venues_on_screen_as_list">As List</string>
+    <string name="option_show_venues_on_screen_as_map">ON MAP</string>
+    <string name="option_show_venues_on_screen_as_list">AS LIST</string>
 
     // Views
     <string name="loading">Loading</string>
