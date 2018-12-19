@@ -27,5 +27,5 @@ data class Response(val venues: List<Venues>?)
 
 data class VenuePage(val id: String?)
 
-data class Venues(val id: String, val name: String?, val location: Location?, val categories: List<Categories>?, val venuePage: VenuePage?)
+data class Venues(val id: String, val name: String, val location: Location?, val categories: List<Categories>?, val venuePage: VenuePage?)
 

@@ -81,9 +81,9 @@ private fun getLocalRepoVenues(query: String, venueList: List<Venues>): List<Ven
         localVenues.add(Venue(venue.id,
                 query,
                 venue.name,
-                venue.location.address,
-                venue.location.distance,
-                venue.location.lng, venue.location.lat))
+                venue.location?.address,
+                venue.location?.distance,
+                venue.location?.lng, venue.location?.lat))
     return localVenues
 
 }
