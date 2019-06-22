@@ -15,34 +15,33 @@ This App uses the latest software versions (IDE, Gradle, Plugins and JetPack col
 
 #### Android Studio
 
-The Android Studio (AS) 3.2 Integrated Development Environment (IDE) available since September 24th 2018 is required for the navigation tooling used in this App. The latest Android Studio version can be downloaded [here](https://developer.android.com/studio/). In this version the Navigation editor has to be enabled from the experimental settings (File → Settings → Experimental → Editor → Enable Navigation Editor) and the related (navigation-fragment) dependencies to be implemented in the module App gradle file. 
+The Android Studio (AS) 3.4.1  
 
 #### Plugins
 
 ##### Kotlin in Android Studio
 
-Due to known issues in the Kotlin plugging installed with this version it is recommended (see the [release notes](https://androidstudio.googleblog.com/2018/09/android-studio-32-available-in-stable.html)) to uninstall the plugin and install the latest available at version 1.2.71 or above.
-
-To update the Kotlin plugin navigate to the Settings of Android Studio and look for the plugins section. Search the kotlin one and verify its version number. Uninstall the plugin and restart the IDE when needed. Install the proposed version which will be above 1.2.71. Restart AS.
+Kotlin version 1.3.40
 
 #### Gradle
 
-The project builds with the given configuration. Updating dependencies at the alpha release stage might require to replace deprecated instances' attributes.
+Gradle version 3.4.1
 
 ## Test Driven Development
 
-An initial project structure with last dependencies' versions has been created to move forward. 
+Ongoing 
 
 ## Current status (old one documented in previous README file)
 
-10 October
+12 June 2019
 
-Updated local data model to store exact queries' results as those can not be found from the query. Similar queries will not produce offline results at this stage.
+Migrated support library and widgets to AndroidX
 
 ## Author
 
 * **Marc Farssac** - *Initial work* 4.10.2018
-* **Marc Farssac** - *Implementing tests* 10.10.2018
+* **Marc Farssac** - *Migrate support library to AndroidX* 22.06.2019
+
 
 ## License
 
