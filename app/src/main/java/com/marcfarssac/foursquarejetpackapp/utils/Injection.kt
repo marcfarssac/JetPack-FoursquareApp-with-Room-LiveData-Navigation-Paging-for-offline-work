@@ -1,8 +1,8 @@
 
 package com.marcfarssac.foursquarejetpackapp.utils
 
-import android.arch.lifecycle.ViewModelProvider
 import android.content.Context
+import androidx.lifecycle.ViewModelProvider
 import com.marcfarssac.foursquarejetpackapp.api.FoursquareService
 import com.marcfarssac.foursquarejetpackapp.data.FoursquareRepository
 import com.marcfarssac.foursquarejetpackapp.db.FoursquareDatabase

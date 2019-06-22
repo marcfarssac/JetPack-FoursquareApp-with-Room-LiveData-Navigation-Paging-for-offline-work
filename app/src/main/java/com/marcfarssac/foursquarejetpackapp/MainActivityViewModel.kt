@@ -2,10 +2,10 @@
 
 package com.marcfarssac.foursquarejetpackapp
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.Transformations
-import android.arch.lifecycle.ViewModel
-import android.arch.paging.PagedList
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.paging.PagedList
 import com.marcfarssac.foursquarejetpackapp.data.CustomMutableLiveData
 import com.marcfarssac.foursquarejetpackapp.data.FoursquareCallParams
 import com.marcfarssac.foursquarejetpackapp.data.FoursquareRepository

@@ -2,9 +2,6 @@ package com.marcfarssac.foursquarejetpackapp
 
 import android.Manifest
 import android.app.PendingIntent
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
-import android.arch.paging.PagedList
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -12,13 +9,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.provider.Settings
-import android.support.design.widget.NavigationView
-import android.support.design.widget.Snackbar
-import android.support.v4.app.ActivityCompat
-import android.support.v4.view.GravityCompat
-import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.DividerItemDecoration
 import android.util.Log
 import android.view.KeyEvent
 import android.view.Menu
@@ -26,11 +16,22 @@ import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
 
+
 import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.view.GravityCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.paging.PagedList
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
+import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.marcfarssac.foursquarejetpackapp.data.FoursquareCallParams
 import com.marcfarssac.foursquarejetpackapp.locationService.LocationHelper
 import com.marcfarssac.foursquarejetpackapp.locationService.LocationUpdatesBroadcastReceiver
@@ -43,7 +44,8 @@ import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
 @Suppress("SpellCheckingInspection")
-class MainActivity : AppCompatActivity(),
+class MainActivity :
+        AppCompatActivity(),
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         SharedPreferences.OnSharedPreferenceChangeListener,
@@ -99,22 +101,13 @@ class MainActivity : AppCompatActivity(),
         viewModel = ViewModelProviders.of(this, Injection.provideViewModelFactory(this))
                 .get(MainActivityViewModel::class.java)
 
-//        Switch button not working with Kotlin? //To Do review it
-//
-//        switchForActionBar.setOnClickListener({ v -> showProgressBar()})
-//        switchForActionBar.setOnClickListener { _ -> showProgressBar()}
-//        switch_button.setOnClickListener { v->
-//            if (v.isEnabled ) doSomething()
-//            else doSomethingElse() }
-
-
         // add dividers between RecyclerView's row items
         val decoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         list.addItemDecoration(decoration)
 
         initAdapter()
-        val query = savedInstanceState?.getString(MainActivity.LAST_SEARCH_QUERY)
-                ?: MainActivity.DEFAULT_QUERY
+        val query = savedInstanceState?.getString(LAST_SEARCH_QUERY)
+                ?: DEFAULT_QUERY
         viewModel.searchVenue(backendCallParams)
         initSearch(query)
 
@@ -129,7 +122,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(MainActivity.LAST_SEARCH_QUERY, viewModel.lastQueryValue())
+        outState.putString(LAST_SEARCH_QUERY, viewModel.lastQueryValue())
     }
 
     private fun initAdapter() {
@@ -167,8 +160,8 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun updateVenueListFromInput() {
-        edit_text_search_venue.text.trim().let {
-            if (it.isNotEmpty()) {
+        edit_text_search_venue.text?.trim().let {
+            if (it!!.isNotEmpty()) {
                 list.scrollToPosition(0)
                 backendCallParams.query = it.toString()
                 viewModel.searchVenue(backendCallParams)
@@ -346,7 +339,7 @@ class MainActivity : AppCompatActivity(),
         }
         mGoogleApiClient = GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
-                .enableAutoManage(this, this)
+//                .enableAutoManage(this, this)
                 .addApi(LocationServices.API)
                 .build()
     }
