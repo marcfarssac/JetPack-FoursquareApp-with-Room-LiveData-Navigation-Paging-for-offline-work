@@ -1,8 +1,9 @@
 package com.marcfarssac.foursquarejetpackapp.data;
 
-import android.arch.lifecycle.MutableLiveData;
-import android.databinding.BaseObservable;
-import android.databinding.Observable;
+
+import androidx.databinding.BaseObservable;
+import androidx.databinding.Observable;
+import androidx.lifecycle.MutableLiveData;
 
 public class CustomMutableLiveData<T extends BaseObservable> extends MutableLiveData<T> {
 

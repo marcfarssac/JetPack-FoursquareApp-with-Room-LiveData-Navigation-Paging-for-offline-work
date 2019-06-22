@@ -1,7 +1,7 @@
 package com.marcfarssac.foursquarejetpackapp.db
 
-import android.arch.paging.DataSource
 import android.util.Log
+import androidx.paging.DataSource
 import com.marcfarssac.foursquarejetpackapp.model.Venue
 import java.util.concurrent.Executor
 

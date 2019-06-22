@@ -1,7 +1,7 @@
 package com.marcfarssac.foursquarejetpackapp.data;
 
-import android.databinding.BaseObservable;
-import android.databinding.Bindable;
+import androidx.databinding.BaseObservable;
+import androidx.databinding.Bindable;
 
 public class FoursquareCallParams extends BaseObservable {
 

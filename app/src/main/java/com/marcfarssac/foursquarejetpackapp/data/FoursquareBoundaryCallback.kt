@@ -1,9 +1,8 @@
 package com.marcfarssac.foursquarejetpackapp.data
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.paging.PagedList
-
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.paging.PagedList
 import com.marcfarssac.foursquarejetpackapp.api.FoursquareService
 import com.marcfarssac.foursquarejetpackapp.api.searchVenue
 import com.marcfarssac.foursquarejetpackapp.db.FoursquareLocalCache

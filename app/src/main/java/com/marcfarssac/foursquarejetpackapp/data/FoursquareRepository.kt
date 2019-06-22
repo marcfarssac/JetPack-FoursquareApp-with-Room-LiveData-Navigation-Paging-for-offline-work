@@ -1,7 +1,7 @@
 package com.marcfarssac.foursquarejetpackapp.data
 
-import android.arch.paging.LivePagedListBuilder
 import android.util.Log
+import androidx.paging.LivePagedListBuilder
 import com.marcfarssac.foursquarejetpackapp.api.FoursquareService
 import com.marcfarssac.foursquarejetpackapp.db.FoursquareLocalCache
 import com.marcfarssac.foursquarejetpackapp.model.VenueSearchResult
