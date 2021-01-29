@@ -31,8 +31,7 @@ Gradle version 3.4.1
 
 Ongoing 
 
-## Current status (old one documented in previous README file)
-
+## Current status
 12 June 2019
 
 Migrated support library and widgets to AndroidX
